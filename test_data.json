@@ -1,0 +1,420 @@
+{
+    "users": [
+        {
+            "email": "alex.johnson@example.com",
+            "username": "alexj",
+            "password": "$argon2id$v=19$m=65536,t=2,p=4$GEOotRZirHVOiTHm/J8T4g$M0mEIzP8GgTVjG0QiDPe0N5cA6rEkpgu0N42XXVNMXQ",
+            "created_at": "2023-05-12T08:30:15"
+        },
+        {
+            "email": "sarah.miller@mailservice.com",
+            "username": "sarahm",
+            "password": "$argon2id$v=19$m=65536,t=2,p=4$GENIac3ZW+t9r1WqlXKOkQ$S6SMtth7YAZECys+roVT6Ajh41SoYpXhsUn6BCCmVHs",
+            "created_at": "2024-02-28T14:22:47"
+        },
+        {
+            "email": "mike.carter@webapp.io",
+            "username": "mikecarter89",
+            "password": "$argon2id$v=19$m=65536,t=2,p=4$/R+DcK71/r83xjgHICSkNA$rwBnnSXBFJfWesIY5I/eYjuZgsO/t9W6wbcYhOK7XUI",
+            "created_at": "2022-11-03T09:45:30"
+        },
+        {
+            "email": "lisa.wong@domain.org",
+            "username": "lisawong",
+            "password": "$argon2id$v=19$m=65536,t=2,p=4$zJmzlnKOcQ7hXOudE0IoZQ$RlHwNNIQjBr7aK74xAf3OT9ZRvdrq3tSix8OkEVXJ3c",
+            "created_at": "2024-07-19T16:10:22"
+        },
+        {
+            "email": "david_smith@emailprovider.net",
+            "username": "davids",
+            "password": "$argon2id$v=19$m=65536,t=2,p=4$s1aqde7dm/M+hzCGsNbaOw$CdM0g1P5mt3i1uknw1AgZSCzpP1kD6y/qLfzEoinV/M",
+            "created_at": "2023-09-01T11:05:18"
+        },
+        {
+            "email": "emily.rose@fastmail.com",
+            "username": "emilyr",
+            "password": "$argon2id$v=19$m=65536,t=2,p=4$DsE4h/DeG2PsnZOyds6ZUw$4zvATlvokbuMCS2/UaJua9jQyeYEUNpIYC/KaSwFqaI",
+            "created_at": "2024-04-15T13:40:55"
+        },
+        {
+            "email": "ryan.patel@service.co",
+            "username": "ryanp92",
+            "password": "$argon2id$v=19$m=65536,t=2,p=4$9p6TUso55/y/V+qdk1IKYQ$XnNCTKT7y8DW8tRUg/0qLI0/RVKchNxzJ7etzA9e3Ro",
+            "created_at": "2023-12-10T10:20:33"
+        },
+        {
+            "email": "olivia.garcia@webmail.com",
+            "username": "oliviag",
+            "password": "$argon2id$v=19$m=65536,t=2,p=4$/T+HkJKSUgphzPkfY0yJMQ$3+MO9JjYM68WlGe9lNTY+VWeCKszYqWMzAitQpbTPbM",
+            "created_at": "2024-01-22T15:15:10"
+        },
+        {
+            "email": "kevin.brown@mailhost.org",
+            "username": "kevinb",
+            "password": "$argon2id$v=19$m=65536,t=2,p=4$FyJkrHXu/f+fUypFKKV0Dg$hkZWwviKEmZYag2Bb1KdPWfI/jRcHuzagBGDLNy7HwA",
+            "created_at": "2022-08-07T12:25:41"
+        },
+        {
+            "email": "jessica.taylor@example.net",
+            "username": "jessicat",
+            "password": "$argon2id$v=19$m=65536,t=2,p=4$vZcyJuR87937vzcmZKy1lg$xIabbyDyymgBtuVV5zU35rhDOZgU3ffjKUmasidMyw0",
+            "created_at": "2024-03-30T17:55:29"
+        },
+        {
+            "email": "admin@example.com",
+            "username": "admin",
+            "password": "$argon2id$v=19$m=65536,t=2,p=4$wljrfU/JWSuFcE6JUeq9Vw$KUX+7vQgttHdgjuaSUzRq8RTxwCkhsE0Isv6VZKu+q0",
+            "created_at": "2024-03-30T17:55:29"
+        }
+    ],
+    "tasks": [
+        {
+            "title": "Morning jog",
+            "description": "Run 3 miles in the park",
+            "time": "07:30",
+            "priority": 2,
+            "is_completed": true,
+            "created_at": "2024-01-10T08:00:00",
+            "updated_at": "2024-01-10T09:15:00",
+            "user_id": 1
+        },
+        {
+            "title": "Team meeting",
+            "description": "Weekly project sync with engineering team",
+            "time": "10:00",
+            "priority": 3,
+            "is_completed": false,
+            "created_at": "2024-01-12T09:30:00",
+            "updated_at": "2024-01-12T09:30:00",
+            "user_id": 1
+        },
+        {
+            "title": "Grocery shopping",
+            "description": "Buy vegetables, milk, and eggs",
+            "time": "17:00",
+            "priority": 1,
+            "is_completed": false,
+            "created_at": "2024-01-14T14:20:00",
+            "updated_at": "2024-01-14T14:20:00",
+            "user_id": 1
+        },
+        {
+            "title": "Client presentation",
+            "description": "Prepare slides for quarterly review",
+            "time": "14:00",
+            "priority": 3,
+            "is_completed": true,
+            "created_at": "2024-01-08T10:00:00",
+            "updated_at": "2024-01-09T16:30:00",
+            "user_id": 2
+        },
+        {
+            "title": "Dentist appointment",
+            "description": "Routine checkup and cleaning",
+            "time": "15:30",
+            "priority": 2,
+            "is_completed": false,
+            "created_at": "2024-01-05T11:45:00",
+            "updated_at": "2024-01-12T11:45:00",
+            "user_id": 2
+        },
+        {
+            "title": "Code review",
+            "description": "Review PR #457 from junior developer",
+            "time": "11:00",
+            "priority": 2,
+            "is_completed": true,
+            "created_at": "2024-01-13T09:00:00",
+            "updated_at": "2024-01-13T12:30:00",
+            "user_id": 3
+        },
+        {
+            "title": "Gym workout",
+            "description": "Leg day with trainer",
+            "time": "18:00",
+            "is_completed": false,
+            "created_at": "2024-01-10T15:00:00",
+            "updated_at": "2024-01-10T15:00:00",
+            "user_id": 3
+        },
+        {
+            "title": "Submit report",
+            "description": "Monthly sales report to management",
+            "time": "16:00",
+            "priority": 3,
+            "is_completed": false,
+            "created_at": "2024-01-11T13:00:00",
+            "updated_at": "2024-01-14T10:00:00",
+            "user_id": 3
+        },
+        {
+            "title": "Movie night",
+            "description": "Watch new sci-fi film with friends",
+            "time": "20:00",
+            "is_completed": false,
+            "created_at": "2024-01-13T18:30:00",
+            "updated_at": "2024-01-13T18:30:00",
+            "user_id": 4
+        },
+        {
+            "title": "Clean apartment",
+            "description": "Vacuum and mop all rooms",
+            "time": "13:00",
+            "priority": 1,
+            "is_completed": true,
+            "created_at": "2024-01-07T09:00:00",
+            "updated_at": "2024-01-07T14:00:00",
+            "user_id": 4
+        },
+        {
+            "title": "Parent-teacher conference",
+            "description": "Discuss child's progress with teacher",
+            "time": "16:30",
+            "priority": 2,
+            "is_completed": false,
+            "created_at": "2024-01-09T12:00:00",
+            "updated_at": "2024-01-12T12:00:00",
+            "user_id": 5
+        },
+        {
+            "title": "Pay bills",
+            "description": "Electricity, internet, and credit card payments",
+            "time": "19:00",
+            "priority": 2,
+            "is_completed": true,
+            "created_at": "2024-01-05T08:00:00",
+            "updated_at": "2024-01-05T20:30:00",
+            "user_id": 5
+        },
+        {
+            "title": "Book club meeting",
+            "description": "Discuss 'The Midnight Library' with group",
+            "time": "18:30",
+            "priority": 1,
+            "is_completed": false,
+            "created_at": "2024-01-08T14:00:00",
+            "updated_at": "2024-01-08T14:00:00",
+            "user_id": 5
+        },
+        {
+            "title": "Update portfolio",
+            "description": "Add recent projects to online portfolio",
+            "time": "11:00",
+            "priority": 2,
+            "is_completed": true,
+            "created_at": "2024-01-06T10:00:00",
+            "updated_at": "2024-01-06T15:45:00",
+            "user_id": 5
+        },
+        {
+            "title": "Car maintenance",
+            "description": "Oil change and tire rotation",
+            "time": "09:00",
+            "priority": 2,
+            "is_completed": false,
+            "created_at": "2024-01-04T16:00:00",
+            "updated_at": "2024-01-12T16:00:00",
+            "user_id": 5
+        },
+        {
+            "title": "Lunch with colleague",
+            "description": "Catch up with former coworker",
+            "time": "12:30",
+            "priority": 1,
+            "is_completed": true,
+            "created_at": "2024-01-10T09:00:00",
+            "updated_at": "2024-01-11T13:45:00",
+            "user_id": 6
+        },
+        {
+            "title": "Research competitors",
+            "description": "Analyze new features in competitor apps",
+            "time": "10:30",
+            "priority": 2,
+            "is_completed": false,
+            "created_at": "2024-01-11T14:00:00",
+            "updated_at": "2024-01-14T14:00:00",
+            "user_id": 6
+        },
+        {
+            "title": "Yoga class",
+            "description": "Evening vinyasa flow",
+            "time": "19:30",
+            "priority": 1,
+            "is_completed": false,
+            "created_at": "2024-01-09T18:00:00",
+            "updated_at": "2024-01-09T18:00:00",
+            "user_id": 7
+        },
+        {
+            "title": "Budget planning",
+            "description": "Create monthly expense spreadsheet",
+            "time": "20:00",
+            "priority": 2,
+            "is_completed": true,
+            "created_at": "2024-01-03T19:00:00",
+            "updated_at": "2024-01-04T21:30:00",
+            "user_id": 7
+        },
+        {
+            "title": "Fix leaky faucet",
+            "description": "Replace washer in bathroom faucet",
+            "time": "15:00",
+            "priority": 1,
+            "is_completed": false,
+            "created_at": "2024-01-13T10:00:00",
+            "updated_at": "2024-01-13T10:00:00",
+            "user_id": 7
+        },
+        {
+            "title": "Learn new framework",
+            "description": "Complete tutorial for React Native",
+            "time": "14:00",
+            "priority": 2,
+            "is_completed": false,
+            "created_at": "2024-01-02T13:00:00",
+            "updated_at": "2024-01-14T13:00:00",
+            "user_id": 7
+        },
+        {
+            "title": "Plan birthday party",
+            "description": "Organize decorations and food for party",
+            "time": "16:00",
+            "priority": 2,
+            "is_completed": true,
+            "created_at": "2024-01-01T11:00:00",
+            "updated_at": "2024-01-08T17:00:00",
+            "user_id": 7
+        },
+        {
+            "title": "Write blog post",
+            "description": "Article about productivity tips",
+            "time": "09:30",
+            "priority": 1,
+            "is_completed": false,
+            "created_at": "2024-01-12T08:00:00",
+            "updated_at": "2024-01-12T08:00:00",
+            "user_id": 8
+        },
+        {
+            "title": "Doctor's appointment",
+            "description": "Annual physical examination",
+            "time": "11:30",
+            "priority": 2,
+            "is_completed": true,
+            "created_at": "2023-12-28T14:00:00",
+            "updated_at": "2024-01-10T12:00:00",
+            "user_id": 8
+        },
+        {
+            "title": "Update software",
+            "description": "Install latest OS and app updates",
+            "time": "21:00",
+            "priority": 1,
+            "is_completed": true,
+            "created_at": "2024-01-07T20:00:00",
+            "updated_at": "2024-01-07T22:30:00",
+            "user_id": 8
+        },
+        {
+            "title": "Networking event",
+            "description": "Tech industry meetup downtown",
+            "time": "18:00",
+            "priority": 2,
+            "is_completed": false,
+            "created_at": "2024-01-11T15:00:00",
+            "updated_at": "2024-01-11T15:00:00",
+            "user_id": 9
+        },
+        {
+            "title": "Return library books",
+            "description": "Books due today, avoid late fees",
+            "time": "17:30",
+            "priority": 1,
+            "is_completed": false,
+            "created_at": "2024-01-08T12:00:00",
+            "updated_at": "2024-01-14T12:00:00",
+            "user_id": 9
+        },
+        {
+            "title": "Prepare tax documents",
+            "description": "Gather W-2s and receipts for accountant",
+            "time": "13:00",
+            "priority": 3,
+            "is_completed": false,
+            "created_at": "2024-01-03T10:00:00",
+            "updated_at": "2024-01-13T10:00:00",
+            "user_id": 9
+        },
+        {
+            "title": "Cook dinner for family",
+            "description": "Make lasagna for family gathering",
+            "time": "18:30",
+            "priority": 1,
+            "is_completed": false,
+            "created_at": "2024-01-13T16:00:00",
+            "updated_at": "2024-01-13T16:00:00",
+            "user_id": 10
+        },
+        {
+            "title": "Backup photos",
+            "description": "Upload vacation photos to cloud storage",
+            "time": "22:00",
+            "priority": 1,
+            "is_completed": true,
+            "created_at": "2024-01-06T20:00:00",
+            "updated_at": "2024-01-07T23:15:00",
+            "user_id": 10
+        },
+        {
+            "title": "Call insurance company",
+            "description": "Check coverage for upcoming procedure",
+            "time": "14:30",
+            "priority": 2,
+            "is_completed": false,
+            "created_at": "2024-01-09T13:00:00",
+            "updated_at": "2024-01-14T13:00:00",
+            "user_id": 10
+        },
+        {
+            "title": "Organize closet",
+            "description": "Sort clothes by season, donate unused items",
+            "time": "10:00",
+            "priority": 0,
+            "is_completed": false,
+            "created_at": "2024-01-14T09:00:00",
+            "updated_at": "2024-01-14T09:00:00",
+            "user_id": 10
+        },
+        {
+            "title": "Practice guitar",
+            "description": "Work on new song for 30 minutes",
+            "time": "20:30",
+            "priority": 1,
+            "is_completed": true,
+            "created_at": "2024-01-04T19:00:00",
+            "updated_at": "2024-01-04T21:00:00",
+            "user_id": 10
+        },
+        {
+            "title": "Review contracts",
+            "description": "Go over new client service agreement",
+            "time": "15:00",
+            "priority": 3,
+            "is_completed": false,
+            "created_at": "2024-01-05T14:00:00",
+            "updated_at": "2024-01-12T14:00:00",
+            "user_id": 10
+        },
+        {
+            "title": "Schedule social media posts",
+            "description": "Plan content for next week",
+            "time": "11:30",
+            "priority": 1,
+            "is_completed": false,
+            "created_at": "2024-01-08T10:30:00",
+            "updated_at": "2024-01-08T10:30:00",
+            "user_id": 1
+        }
+    ]
+}
