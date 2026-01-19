@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from fastapi import Depends, Form, HTTPException, Request, status
 from jwt import InvalidTokenError
 from pydantic import EmailStr
@@ -48,7 +50,21 @@ async def validate_blacklisted_token(payload: dict, request: Request):
     if blacklist.is_blacklisted(payload["jti"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Your token is blacklisted, either use newer token, or login for the new token",
+            detail="Your token is blacklisted use newer token, or log in to get another one",
+        )
+    return True
+
+
+async def validate_suspicious_token(payload: dict, request: Request):
+    blacklist = request.app.state.blacklist
+    earliest_token_expiry: int | None = blacklist.is_suspicious(payload["sub"])
+    if earliest_token_expiry:
+        earliest_token_expiry_dt = datetime.fromtimestamp(
+            earliest_token_expiry, tz=timezone.utc
+        )
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"You've been temporarily banned due to having suspicious activity, you can receive new refresh token either by logging in or waiting until {earliest_token_expiry_dt}",
         )
     return True
 
@@ -75,8 +91,8 @@ class UserGetterFromToken:
     ):
         await validate_token_type(payload, self.token_type)
         await validate_blacklisted_token(payload, request)
-        user = await get_user_by_id(int(payload.get("sub")), session)
-        return user
+        await validate_suspicious_token(payload, request)
+        return await get_user_by_id(int(payload.get("sub")), session)
 
 
 get_current_auth_user = UserGetterFromToken(ACCESS_TOKEN_TYPE)

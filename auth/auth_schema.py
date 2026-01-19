@@ -11,7 +11,9 @@ class AuthJWT(BaseModel):
 
     algorithm: str = "RS256"
     access_token_expire: int = 15
-    refresh_token_expire: int = 15
+    refresh_token_expire_web: int = 7
+    refresh_token_expire_trusted: int = 30
+    refresh_token_expire_mobile: int = 90
 
 
 class TokenInfo(BaseModel):

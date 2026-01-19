@@ -1,0 +1,85 @@
+services: 
+  app: 
+    build:
+      dockerfile: ./dockerfile
+      context: ./
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://$${DB_USER}:$${DB_PASSWORD}@$${DB_HOST}:$${DB_PORT}/$${DB_NAME}"
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      pg:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync+restart
+          path: .
+          target: /app
+        - action: rebuild
+          path: ./uv.lock
+    security_opt:
+      - no-new-privileges: true
+    cap_drop: 
+      - ALL
+    cap_add:
+      - CHOWN                 # ✅ File ownership
+      - SETGID                # ✅ Group ID changes
+      - SETUID                # ✅ User ID changes
+    network:
+      - app-network
+      - db-network
+  
+  pg:
+    image: postges:18-alpine3.22
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/pgdata
+    volumes:
+      - pgdata: /var/lib/postgresql/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    security_opt:
+      -no-new-privileges: true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN                 # ✅ Data directory
+      - DAC_OVERRIDE          # ✅ File operations
+      - SETGID                # ✅ Group operations
+      - SETUID                # ✅ User operations    
+    networks:
+      - db-network
+
+  adminer:
+    image: adminer
+    depends_on:
+      pg:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    security_opt:
+      - no-new-privileges: true
+    cap_drop:
+      - ALL
+    networks:
+      - admin-network
+      - db-network
+volumes:
+  pgdata:
+
+networks:
+  app-network:
+  admin-network:
+  db-network:
+    internal: true

@@ -60,10 +60,25 @@ async def see_the_blacklist(
     request: Request, user: UserSchema = Depends(validate_auth_user)
 ):
     if user.email == admin_email:
-        return request.app.state.blacklist.blacklisted
+        return request.app.state.blacklist.jti_to_expiry_blacklist
     else:
         return {"Message": f"{user.username} you are not admin"}
 
 
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
+
+# TODO: Rate limiting, Logout/Token Revocation, Database Token Storage
+# TODO: add forgot-password and reset-password endpoints
+# TODO: @router.post(
+#     "/login",
+#     response_model=TokenResponse,
+#     summary="User Login",
+#     description="Authenticate user and return JWT tokens",
+#     responses={
+#         200: {"description": "Successful authentication"},
+#         401: {"description": "Invalid credentials"},
+#         429: {"description": "Too many requests"}
+#     }
+# )
+# document like this

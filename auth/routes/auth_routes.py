@@ -33,7 +33,7 @@ def auth_user_issue_jwt_refresh(
     payload: dict = Depends(get_current_token_payload),
 ):
     blacklist = request.app.state.blacklist
-    blacklist.add(jti=payload["jti"], expires_at=payload["exp"])
+    blacklist.add(jti=payload["jti"], expires_at=payload["exp"], sub=payload["sub"])
 
     access_token = create_access_token(user)
     refresh_token = create_refresh_token(user)

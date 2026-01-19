@@ -1,7 +1,6 @@
 import asyncio
-from copy import deepcopy
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 from fastapi import Request
 from fastapi.security import HTTPBearer, OAuth2PasswordBearer
@@ -49,31 +48,55 @@ def create_refresh_token(user: UserSchema) -> str:
     return create_jwt(
         token_type=REFRESH_TOKEN_TYPE,
         token_data=jwt_payload,
-        expire_timedelta=timedelta(days=auth_jwt.refresh_token_expire),
+        expire_timedelta=timedelta(days=auth_jwt.refresh_token_expire_web),
+        # expire_timedelta=timedelta(minutes=2),
     )
 
 
 class TokenBlackList:
     def __init__(self):
-        self.blacklisted: List[Dict[str, str | datetime]] = []
+        self.jti_to_expiry_blacklist: Dict[str, datetime] = {}
+        self.jti_to_user_blacklist: Dict[str, str] = {}
 
-    def add(self, jti: str, expires_at: datetime):
-        self.blacklisted.append({"jti": jti, "exp": expires_at})
+    def add(self, jti: str, expires_at: datetime, sub: str):
+        self.jti_to_expiry_blacklist[jti] = expires_at
+        self.jti_to_user_blacklist[jti] = sub
 
     def is_blacklisted(self, jti: str):
-        blacklisted_ids = [token["jti"] for token in self.blacklisted]
-        return jti in blacklisted_ids
+        return jti in self.jti_to_expiry_blacklist
+
+    # TODO: IP Change Detection
+    def is_suspicious(self, sub: str):
+        user_tokens_to_expiry = {}
+        for jti, user_id in self.jti_to_user_blacklist.items():
+            if user_id == sub:
+                user_tokens_to_expiry[jti] = self.jti_to_expiry_blacklist[jti]
+
+        if len(user_tokens_to_expiry) > 7:
+            earliest_token_expiry = sorted(
+                user_tokens_to_expiry.items(), key=lambda item: item[1]
+            )[0][1]
+            return earliest_token_expiry
+        print(user_tokens_to_expiry)
+        return False
 
     def _cleanup(self):
-        blacklist = deepcopy(self.blacklisted)
-        for token in blacklist:
-            if token["exp"] < datetime.now(timezone.utc):
-                self.blacklisted.remove(token)
+        to_delete_jti = []
+        for jti, expiry in self.jti_to_expiry_blacklist.items():
+            expiry_dt = datetime.fromtimestamp(expiry, tz=timezone.utc)
+            if expiry_dt < datetime.now(timezone.utc):
+                to_delete_jti.append(jti)
+
+        for jti in to_delete_jti:
+            del self.jti_to_expiry_blacklist[jti]
+            del self.jti_to_user_blacklist[jti]
 
     async def start_periodic_cleanup(self, interval_minutes: int = 5):
         while True:
+            print(f"[{datetime.now()}] Cleanup running...")
             await asyncio.sleep(60 * interval_minutes)
-            self._cleanup
+            self._cleanup()
+            print(f"[{datetime.now()}] Cleanup finished...")
 
 
 def get_blacklist(request: Request) -> TokenBlackList:

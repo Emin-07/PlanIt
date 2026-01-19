@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Waiting for database to be ready..."
+sleep 5
+
+echo "Applying Alembic migrations..."
+uv run alembic upgrade head
+
+echo "Starting FastAPI server ..."
+exec uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
