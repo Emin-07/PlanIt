@@ -5,8 +5,9 @@ import aiofiles
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
-from . import Task, User
-from .setup import Base, async_engine
+from core.setup import Base, async_engine
+from models.task_model import Task
+from models.user_model import User
 
 test_data_path = "test_data.json"
 

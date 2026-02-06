@@ -2,10 +2,9 @@ import time
 
 from fastapi import Depends, HTTPException, Request, status
 
-from auth.services.validation import get_current_auth_user
-
-from .config import settings
-from .redis import redis_manager
+from core.config import settings
+from core.redis import redis_manager
+from services.auth_validation import get_current_auth_user
 
 
 async def check_rate_limit(id: str, prefix: str, limit: int, window: int):

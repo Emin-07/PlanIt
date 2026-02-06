@@ -2,10 +2,9 @@ from typing import List
 
 from fastapi import APIRouter, Depends
 
-from core.relation_schemas import UserRelSchema
-
-from ..schemas.user_schemas import UserSchema
-from ..services.user_services import (
+from schemas.relation_schemas import UserRelSchema
+from schemas.user_schemas import UserSchema
+from services.user_services import (
     change_user,
     create_user,
     delete_user_by_id,

@@ -7,12 +7,11 @@ from fastapi.security import (
     HTTPBearer,
 )
 
-from user.schemas.user_schemas import UserSchema
+from schemas.user_schemas import UserSchema
 
-from .utils import auth_jwt, encode_jwt
+from .auth_utils import auth_jwt, encode_jwt
 
 http_bearer = HTTPBearer(auto_error=False)
-# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 TOKEN_TYPE_FIELD = "type"

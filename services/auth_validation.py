@@ -6,20 +6,19 @@ from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import EmailStr
 
 from core import get_session
-from user.schemas.user_schemas import UserLogin
-from user.services.user_services import (
+from schemas.user_schemas import UserLogin
+from services.user_services import (
     get_user_by_email,
     get_user_by_email_for_login,
     get_user_by_id,
 )
-
-from ..utils.helper import (
+from utils.auth_helper import (
     ACCESS_TOKEN_TYPE,
     REFRESH_TOKEN_TYPE,
     TOKEN_TYPE_FIELD,
     http_bearer,
 )
-from ..utils.utils import decode_jwt, validate_pwd
+from utils.auth_utils import decode_jwt, validate_pwd
 
 
 async def validate_auth_user(
@@ -38,8 +37,14 @@ async def validate_auth_user(
 async def get_current_token_payload(
     creds: HTTPAuthorizationCredentials = Depends(http_bearer),
 ):
+    try:
+        token = creds.credentials
+    except AttributeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"You aren't authorized, please login and pass token into http bearer, error: {e}",
+        )
 
-    token = creds.credentials
     try:
         payload = decode_jwt(token)
     except jwt.PyJWTError as e:

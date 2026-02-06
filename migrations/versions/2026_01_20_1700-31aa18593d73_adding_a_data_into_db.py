@@ -11,7 +11,7 @@ from typing import Sequence, Union
 from alembic import op
 from sqlalchemy.orm import Session
 
-from core.data_helper import add_data_into_db_sync, get_data_sync
+from utils.data_helper import add_data_into_db_sync, get_data_sync
 
 # revision identifiers, used by Alembic.
 revision: str = "31aa18593d73"

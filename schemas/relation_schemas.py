@@ -1,7 +1,7 @@
 from typing import List
 
-from task.schemas.task_schemas import TaskSchema
-from user.schemas.user_schemas import UserSchema
+from .task_schemas import TaskSchema
+from .user_schemas import UserSchema
 
 
 class TaskRelSchema(TaskSchema):

@@ -1,15 +1,14 @@
 from fastapi import Depends, HTTPException, status
-from pydantic import EmailStr
+from pydantic import EmailStr, SecretStr
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
-from auth.utils.utils import hash_pwd
 from core import get_session
-from core.relation_schemas import UserRelSchema
-
-from ..models.user_model import User
-from ..schemas.user_schemas import UserCreate, UserLogin, UserSchema, UserUpdate
+from models.user_model import User
+from schemas.relation_schemas import UserRelSchema
+from schemas.user_schemas import UserCreate, UserLogin, UserSchema, UserUpdate
+from utils.auth_utils import hash_pwd
 
 # TODO: make default username like, user132121312
 
@@ -70,7 +69,7 @@ async def get_user_by_email_for_login(
             detail=f"User with email {user_email} not found",
         )
 
-    return UserLogin(email=user.email, password=user.password)
+    return UserLogin(email=user.email, password=SecretStr(user.password))
 
 
 async def get_users(
@@ -91,7 +90,7 @@ async def delete_user_by_id(user_id: int, session: AsyncSession = Depends(get_se
             detail=f"No user with id ({user_id}) found",
         )
 
-    session.delete(user)
+    await session.delete(user)
     await session.commit()
 
     return UserSchema.model_validate(user)

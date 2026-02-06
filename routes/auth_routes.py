@@ -1,15 +1,14 @@
 from fastapi import APIRouter, Depends, Request
 
-from user.schemas.user_schemas import UserSchema
-
-from ..auth_schema import TokenInfo
-from ..services.validation import (
+from schemas.auth_schema import TokenInfo
+from schemas.user_schemas import UserSchema
+from services.auth_validation import (
     get_current_auth_user,
     get_current_auth_user_for_refresh,
     get_current_token_payload,
     validate_auth_user,
 )
-from ..utils.helper import (
+from utils.auth_helper import (
     create_access_token,
     create_refresh_token,
     http_bearer,

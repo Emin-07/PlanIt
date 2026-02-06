@@ -6,7 +6,7 @@ import jwt
 from passlib.context import CryptContext
 from pydantic import SecretStr
 
-from ..auth_schema import AuthJWT
+from schemas.auth_schema import AuthJWT
 
 pwd_context = CryptContext(
     schemes=["argon2"],  # No length limitations
@@ -47,7 +47,7 @@ def decode_jwt(
     key: str = auth_jwt.public_key_path.read_text(),
     algorithm: str = auth_jwt.algorithm,
 ):
-    decoded = jwt.decode(jwt_token, key, algorithm)
+    decoded = jwt.decode(jwt=jwt_token, key=key, algorithms=algorithm)
     return decoded
 
 

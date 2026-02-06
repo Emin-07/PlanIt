@@ -8,7 +8,7 @@ from core.setup import Base
 from . import DateStr, intpk
 
 if TYPE_CHECKING:
-    from task.models.task_model import Task
+    from .task_model import Task
 
 
 class User(Base):

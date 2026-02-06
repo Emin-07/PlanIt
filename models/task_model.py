@@ -4,12 +4,12 @@ from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.setup import Base
-from user.models import DateStr, get_current_utc_time, intpk
+from schemas.task_schemas import PriorityEnum
 
-from ..schemas.task_schemas import PriorityEnum
+from . import DateStr, get_current_utc_time, intpk
 
 if TYPE_CHECKING:
-    from user.models.user_model import User
+    from models.user_model import User
 
 
 class Task(Base):

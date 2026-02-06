@@ -2,10 +2,9 @@ from typing import List
 
 from fastapi import APIRouter, Depends
 
-from core.relation_schemas import TaskRelSchema
-
-from ..schemas.task_schemas import TaskSchema
-from ..services.task_services import (
+from schemas.relation_schemas import TaskRelSchema
+from schemas.task_schemas import TaskSchema
+from services.task_services import (
     change_task,
     create_task,
     delete_task_by_id,

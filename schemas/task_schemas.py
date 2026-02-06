@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from user.models import get_current_utc_time
+from models import get_current_utc_time
 
 
 class PriorityEnum(Enum):
@@ -29,10 +29,10 @@ class TaskBase(BaseModel):
         description="Status of the task which shows, whether the task is completed or not",
     )
     created_at: str = Field(
-        default=get_current_utc_time, description="Date of when the task was created"
+        default=get_current_utc_time(), description="Date of when the task was created"
     )
     updated_at: str = Field(
-        default=get_current_utc_time,
+        default=get_current_utc_time(),
         description="Date of when the task was last updated",
     )
     user_id: int = Field(description="Id of the user this task belongs to")

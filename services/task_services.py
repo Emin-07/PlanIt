@@ -6,16 +6,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from core import get_session
-from core.relation_schemas import TaskRelSchema
-
-from ..models.task_model import Task
-from ..schemas.task_schemas import TaskBase, TaskSchema, TaskUpdate
+from models.task_model import Task
+from schemas.relation_schemas import TaskRelSchema
+from schemas.task_schemas import TaskBase, TaskSchema, TaskUpdate
 
 
 async def create_task(
     task: TaskBase, session: AsyncSession = Depends(get_session)
 ) -> TaskSchema:
-    new_task = Task(**task)
+    new_task = Task(**task.model_dump())
     session.add(new_task)
 
     await session.commit()
@@ -76,7 +75,7 @@ async def delete_task_by_id(task_id: int, session: AsyncSession = Depends(get_se
             detail=f"No task with id ({task_id}) found",
         )
 
-    session.delete(task)
+    await session.delete(task)
     await session.commit()
 
     return TaskSchema.model_validate(task)

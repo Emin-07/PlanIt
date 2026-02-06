@@ -1,6 +1,6 @@
 import json
 
-from auth.utils.utils import hash_pwd
+from utils.auth_utils import hash_pwd
 
 users = [
     {

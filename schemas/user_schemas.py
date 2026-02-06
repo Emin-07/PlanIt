@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, SecretStr
 
-from ..models import get_current_utc_time
+from models import get_current_utc_time
 
 
 class UserCreate(BaseModel):
@@ -17,7 +17,7 @@ class UserSchema(BaseModel):
     email: EmailStr = Field(description="User's email, one email per one user")
     username: str = Field(default="user", description="Name of the user")
     created_at: str = Field(
-        default=get_current_utc_time,
+        default=get_current_utc_time(),
         description="Time when user was created",
     )
 
