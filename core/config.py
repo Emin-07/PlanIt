@@ -1,7 +1,13 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+BASE_DIR = Path(__file__).parent.parent
 
 
 class Settings(BaseSettings):
+    # Redis
+
     redis_host: str = "localhost"
     redis_port: int = 6379
     redis_db: int = 0
@@ -12,6 +18,17 @@ class Settings(BaseSettings):
     redis_window: int = 60
     redis_user_window: int = 3600
 
+    # JWT Configuration
+    private_key_path: Path = BASE_DIR / "certs" / "jwt-private.pem"
+    public_key_path: Path = BASE_DIR / "certs" / "jwt-public.pem"
+
+    algorithm: str = "RS256"
+    access_token_expire: int = 15
+    refresh_token_expire_web: int = 7
+    refresh_token_expire_trusted: int = 30
+    refresh_token_expire_mobile: int = 90
+
+    # Postgres
     DB_HOST: str
     DB_PORT: int
     DB_USER: str

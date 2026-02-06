@@ -65,12 +65,17 @@ app.include_router(task_router, dependencies=[Depends(get_user_rate_limit)])
 app.include_router(auth_router, dependencies=[Depends(get_auth_rate_limit)])
 
 
-@app.get("/", response_model=Dict[str, str])
+@app.get("/", response_model=Dict[str, str], summary="User greeter")
 async def root_func(rate_limiter=Depends(get_global_rate_limit)):
     return {"message": "hello world"}
 
 
-@app.put("/", response_model=Dict[str, str])
+@app.put(
+    "/",
+    response_model=Dict[str, str],
+    summary="Data resetter to default",
+    description="resets data to default data (test_data.json)",
+)
 async def refresh_data(
     session=Depends(get_session), rate_limiter=Depends(get_global_rate_limit)
 ):
@@ -79,7 +84,12 @@ async def refresh_data(
     return {"message": "Tables were recreated!"}
 
 
-@app.post("/blacklist", response_model=List | Dict)
+@app.post(
+    "/blacklist",
+    response_model=List | Dict,
+    summary="Token Blacklist only for admin",
+    description="If you are admin, shows which tokens have been blacklisted",
+)
 async def see_the_blacklist(
     request: Request,
     user: UserSchema = Depends(validate_auth_user),
@@ -94,17 +104,12 @@ async def see_the_blacklist(
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
 
+# TODO: Make that you don't need to login in again for blacklist, it'll based on your access token
 # TODO: Logout/Token Revocation, Database Token Storage
 # TODO: add forgot-password and reset-password endpoints
 # TODO: @router.post(
 #     "/login",
 #     response_model=TokenResponse,
 #     summary="User Login",
-#     description="Authenticate user and return JWT tokens",
-#     responses={
-#         200: {"description": "Successful authentication"},
-#         401: {"description": "Invalid credentials"},
-#         429: {"description": "Too many requests"}
-#     }
 # )
 # document like this

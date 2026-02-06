@@ -6,7 +6,7 @@ import jwt
 from passlib.context import CryptContext
 from pydantic import SecretStr
 
-from schemas.auth_schema import AuthJWT
+from core.config import settings
 
 pwd_context = CryptContext(
     schemes=["argon2"],  # No length limitations
@@ -18,14 +18,12 @@ pwd_context = CryptContext(
     deprecated="auto",
 )
 
-auth_jwt = AuthJWT()
-
 
 def encode_jwt(
     payload: dict,
-    key: str = auth_jwt.private_key_path.read_text(),
-    algorithm: str = auth_jwt.algorithm,
-    expire_minutes: int = auth_jwt.access_token_expire,
+    key: str = settings.private_key_path.read_text(),
+    algorithm: str = settings.algorithm,
+    expire_minutes: int = settings.access_token_expire,
     expire_timedelta: timedelta | None = None,
 ):
     jti = str(uuid.uuid4())
@@ -44,8 +42,8 @@ def encode_jwt(
 
 def decode_jwt(
     jwt_token: str | bytes,
-    key: str = auth_jwt.public_key_path.read_text(),
-    algorithm: str = auth_jwt.algorithm,
+    key: str = settings.public_key_path.read_text(),
+    algorithm: str = settings.algorithm,
 ):
     decoded = jwt.decode(jwt=jwt_token, key=key, algorithms=algorithm)
     return decoded

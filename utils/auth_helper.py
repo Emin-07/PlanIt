@@ -7,9 +7,10 @@ from fastapi.security import (
     HTTPBearer,
 )
 
+from core.config import settings
 from schemas.user_schemas import UserSchema
 
-from .auth_utils import auth_jwt, encode_jwt
+from .auth_utils import encode_jwt
 
 http_bearer = HTTPBearer(auto_error=False)
 
@@ -22,7 +23,7 @@ REFRESH_TOKEN_TYPE = "refresh"
 def create_jwt(
     token_type: str,
     token_data: dict,
-    expire_minutes: int = auth_jwt.access_token_expire,
+    expire_minutes: int = settings.access_token_expire,
     expire_timedelta: Optional[timedelta] = None,
 ):
     jwt_payload = {TOKEN_TYPE_FIELD: token_type}
@@ -40,7 +41,7 @@ def create_access_token(user: UserSchema) -> str:
     return create_jwt(
         token_type=ACCESS_TOKEN_TYPE,
         token_data=jwt_payload,
-        expire_minutes=auth_jwt.access_token_expire,
+        expire_minutes=settings.access_token_expire,
     )
 
 
@@ -49,7 +50,7 @@ def create_refresh_token(user: UserSchema) -> str:
     return create_jwt(
         token_type=REFRESH_TOKEN_TYPE,
         token_data=jwt_payload,
-        expire_timedelta=timedelta(days=auth_jwt.refresh_token_expire_web),
+        expire_timedelta=timedelta(days=settings.refresh_token_expire_web),
         # expire_timedelta=timedelta(minutes=2),
     )
 
