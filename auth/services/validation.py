@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
 
+import jwt
 from fastapi import Depends, Form, HTTPException, Request, status
-from jwt import InvalidTokenError
+from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import EmailStr
 
 from core import get_session
@@ -16,7 +17,7 @@ from ..utils.helper import (
     ACCESS_TOKEN_TYPE,
     REFRESH_TOKEN_TYPE,
     TOKEN_TYPE_FIELD,
-    oauth2_scheme,
+    http_bearer,
 )
 from ..utils.utils import decode_jwt, validate_pwd
 
@@ -34,10 +35,14 @@ async def validate_auth_user(
     )
 
 
-async def get_current_token_payload(token: str = Depends(oauth2_scheme)):
+async def get_current_token_payload(
+    creds: HTTPAuthorizationCredentials = Depends(http_bearer),
+):
+
+    token = creds.credentials
     try:
         payload = decode_jwt(token)
-    except InvalidTokenError as e:
+    except jwt.PyJWTError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Invalid Token : {e}",

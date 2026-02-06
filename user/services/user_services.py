@@ -28,7 +28,9 @@ async def create_user(
     return UserSchema.model_validate(new_user)
 
 
-async def get_user_by_id(user_id: int, session: AsyncSession = Depends(get_session)):
+async def get_user_by_id(
+    user_id: int, session: AsyncSession = Depends(get_session)
+) -> UserRelSchema:
     user = await session.get(User, user_id, options=[joinedload(User.tasks)])
     if user is None:
         raise HTTPException(

@@ -1,5 +1,5 @@
 services: 
-  app: 
+  app:
     build:
       dockerfile: ./dockerfile
       context: ./
@@ -21,36 +21,36 @@ services:
         - action: rebuild
           path: ./uv.lock
     security_opt:
-      - no-new-privileges: true
-    cap_drop: 
+      - no-new-privileges:true
+    cap_drop:
       - ALL
     cap_add:
       - CHOWN                 # ✅ File ownership
       - SETGID                # ✅ Group ID changes
       - SETUID                # ✅ User ID changes
-    network:
+    networks:
       - app-network
       - db-network
-  
+      
   pg:
-    image: postges:18-alpine3.22
+    image: postgres:18-alpine3.22
     restart: always
     env_file:
       - .env
     environment:
       POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
+      PGUSER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       PGDATA: /var/lib/postgresql/pgdata
     volumes:
-      - pgdata: /var/lib/postgresql/pgdata
+      - pgdata:/var/lib/postgresql/pgdata
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-U postgres"]
       interval: 5s
       timeout: 3s
       retries: 3
     security_opt:
-      -no-new-privileges: true
+      - no-new-privileges:true
     cap_drop:
       - ALL
     cap_add:
@@ -69,7 +69,7 @@ services:
     ports:
       - "8080:8080"
     security_opt:
-      - no-new-privileges: true
+      - no-new-privileges:true
     cap_drop:
       - ALL
     networks:

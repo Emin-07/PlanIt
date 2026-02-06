@@ -2,19 +2,29 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    POSTGRES_HOST: str
-    POSTGRES_PORT: int
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_NAME: str
+    redis_host: str = "localhost"
+    redis_port: int = 6379
+    redis_db: int = 0
+    redis_url: str = f"redis://{redis_host}:{redis_port}/{redis_db}"
+    redis_limit_global: int = 100
+    redis_limit_auth: int = 10
+    rate_limit_api: int = 1000
+    redis_window: int = 60
+    redis_user_window: int = 3600
+
+    DB_HOST: str
+    DB_PORT: int
+    DB_USER: str
+    DB_PASSWORD: str
+    DB_NAME: str
 
     @property
     def POSTGRES_url_psycopg(self):
-        return f"postgresql+psycopg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_NAME}"
+        return f"postgresql+psycopg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     @property
     def POSTGRES_url_asyncpg(self):
-        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_NAME}"
+        return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     model_config = SettingsConfigDict(env_file=".env")
 

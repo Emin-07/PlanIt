@@ -36,7 +36,7 @@ async def get_task_by_id(task_id: int, session: AsyncSession = Depends(get_sessi
 
 
 async def get_tasks(
-    offset: int, limit: int, session: AsyncSession = Depends(get_session)
+    offset: int = 0, limit: int = 5, session: AsyncSession = Depends(get_session)
 ) -> List[TaskSchema]:
     query = select(Task).offset(offset).limit(limit).order_by(Task.id)
     res = await session.scalars(query)

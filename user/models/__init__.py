@@ -5,7 +5,7 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import mapped_column
 
 
-def get_current_utc_time():
+def get_current_utc_time() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 

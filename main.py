@@ -10,6 +10,12 @@ from auth.services.validation import validate_auth_user
 from auth.utils.helper import TokenBlackList
 from core import get_session
 from core.data_helper import add_data_into_db, recreate_tables
+from core.rate_limit import (
+    get_auth_rate_limit,
+    get_global_rate_limit,
+    get_user_rate_limit,
+)
+from core.redis import redis_manager
 from task.routes.task_routes import router as task_router
 from user.routes.user_routers import router as user_router
 from user.schemas.user_schemas import UserSchema
@@ -19,6 +25,8 @@ admin_email = "admin@example.com"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    print("Starting up...")
+
     blacklist = TokenBlackList()
     app.state.blacklist = blacklist
 
@@ -26,8 +34,22 @@ async def lifespan(app: FastAPI):
         blacklist.start_periodic_cleanup(interval_minutes=15)
     )
     app.state.cleanup_task = cleanup_task
+    try:
+        await redis_manager.connect()
+        print("🔧 Starting Redis connection...")
+    except Exception as e:
+        print(f"❌ Redis connection failed: {e}")
+        raise
 
     yield
+    print("Shutting down...")
+
+    print("🔧 Closing Redis connection...")
+    try:
+        await redis_manager.disconnect()
+        print("✅ Redis disconnected successfully")
+    except Exception as e:
+        print(f"⚠️ Error during Redis disconnect: {e}")
 
     cleanup_task.cancel()
     try:
@@ -38,18 +60,20 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(user_router)
-app.include_router(task_router)
-app.include_router(auth_router)
+app.include_router(user_router, dependencies=[Depends(get_user_rate_limit)])
+app.include_router(task_router, dependencies=[Depends(get_user_rate_limit)])
+app.include_router(auth_router, dependencies=[Depends(get_auth_rate_limit)])
 
 
 @app.get("/", response_model=Dict[str, str])
-async def root_func():
+async def root_func(rate_limiter=Depends(get_global_rate_limit)):
     return {"message": "hello world"}
 
 
 @app.put("/", response_model=Dict[str, str])
-async def refresh_data(session=Depends(get_session)):
+async def refresh_data(
+    session=Depends(get_session), rate_limiter=Depends(get_global_rate_limit)
+):
     await recreate_tables()
     await add_data_into_db(session)
     return {"message": "Tables were recreated!"}
@@ -57,7 +81,9 @@ async def refresh_data(session=Depends(get_session)):
 
 @app.post("/blacklist", response_model=List | Dict)
 async def see_the_blacklist(
-    request: Request, user: UserSchema = Depends(validate_auth_user)
+    request: Request,
+    user: UserSchema = Depends(validate_auth_user),
+    rate_limiter=Depends(get_global_rate_limit),
 ):
     if user.email == admin_email:
         return request.app.state.blacklist.jti_to_expiry_blacklist
@@ -68,7 +94,7 @@ async def see_the_blacklist(
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
 
-# TODO: Rate limiting, Logout/Token Revocation, Database Token Storage
+# TODO: Logout/Token Revocation, Database Token Storage
 # TODO: add forgot-password and reset-password endpoints
 # TODO: @router.post(
 #     "/login",
