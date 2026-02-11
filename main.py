@@ -3,15 +3,16 @@ from contextlib import asynccontextmanager
 from typing import Dict, List
 
 import uvicorn
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, Request, status
 
-from core import get_session
 from core.redis import redis_manager
+from core.setup import get_db
 from routes.auth_routes import router as auth_router
 from routes.task_routes import router as task_router
 from routes.user_routers import router as user_router
 from schemas.user_schemas import UserSchema
-from services.auth_validation import validate_auth_user
+from services.auth_validation import get_current_auth_user
+from services.user_services import create_user
 from utils.auth_helper import TokenBlackList
 from utils.data_helper import add_data_into_db, recreate_tables
 from utils.rate_limit import (
@@ -65,6 +66,16 @@ app.include_router(task_router, dependencies=[Depends(get_user_rate_limit)])
 app.include_router(auth_router, dependencies=[Depends(get_auth_rate_limit)])
 
 
+@app.post(
+    "/users/",
+    tags=["users"],
+    response_model=UserSchema,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_user_handle(user: UserSchema = Depends(create_user)):
+    return user
+
+
 @app.get("/", response_model=Dict[str, str], summary="User greeter")
 async def root_func(rate_limiter=Depends(get_global_rate_limit)):
     return {"message": "hello world"}
@@ -77,7 +88,7 @@ async def root_func(rate_limiter=Depends(get_global_rate_limit)):
     description="resets data to default data (test_data.json)",
 )
 async def refresh_data(
-    session=Depends(get_session), rate_limiter=Depends(get_global_rate_limit)
+    session=Depends(get_db), rate_limiter=Depends(get_global_rate_limit)
 ):
     await recreate_tables()
     await add_data_into_db(session)
@@ -92,9 +103,10 @@ async def refresh_data(
 )
 async def see_the_blacklist(
     request: Request,
-    user: UserSchema = Depends(validate_auth_user),
+    user=Depends(get_current_auth_user),
     rate_limiter=Depends(get_global_rate_limit),
 ):
+
     if user.email == admin_email:
         return request.app.state.blacklist.jti_to_expiry_blacklist
     else:
@@ -104,12 +116,6 @@ async def see_the_blacklist(
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
 
-# TODO: Make that you don't need to login in again for blacklist, it'll based on your access token
-# TODO: Logout/Token Revocation, Database Token Storage
-# TODO: add forgot-password and reset-password endpoints
-# TODO: @router.post(
-#     "/login",
-#     response_model=TokenResponse,
-#     summary="User Login",
-# )
-# document like this
+
+# TODO: Database Token Storage
+# TODO: add forgot-password and reset-password endpoints with email sending, using kafka

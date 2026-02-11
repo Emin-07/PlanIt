@@ -5,7 +5,7 @@ from fastapi import Depends, Form, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import EmailStr
 
-from core import get_session
+from core.setup import get_db
 from schemas.user_schemas import UserLogin
 from services.user_services import (
     get_user_by_email,
@@ -22,7 +22,7 @@ from utils.auth_utils import decode_jwt, validate_pwd
 
 
 async def validate_auth_user(
-    email: EmailStr = Form(), password: str = Form(), session=Depends(get_session)
+    email: EmailStr = Form(), password: str = Form(), session=Depends(get_db)
 ):
     user_login: UserLogin = await get_user_by_email_for_login(email, session)
     if user_login is not None:
@@ -94,15 +94,12 @@ class UserGetterFromToken:
         self.token_type = token_type
 
     async def __call__(
-        self,
-        request: Request,
-        payload: dict = Depends(get_current_token_payload),
-        session=Depends(get_session),
+        self, request: Request, payload: dict = Depends(get_current_token_payload)
     ):
         await validate_token_type(payload, self.token_type)
         await validate_blacklisted_token(payload, request)
         await validate_suspicious_token(payload, request)
-        return await get_user_by_id(int(payload.get("sub")), session)
+        return await get_user_by_id(int(payload.get("sub")))
 
 
 get_current_auth_user = UserGetterFromToken(ACCESS_TOKEN_TYPE)

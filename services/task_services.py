@@ -1,96 +1,58 @@
 from typing import List
 
-from fastapi import Depends, HTTPException, status
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import HTTPException, status
 from sqlalchemy.orm import selectinload
 
-from core import get_session
+from core.setup import async_session_factory
 from models.task_model import Task
+from models.user_model import User
 from schemas.relation_schemas import TaskRelSchema
 from schemas.task_schemas import TaskBase, TaskSchema, TaskUpdate
 
+from .service import Service
 
-async def create_task(
-    task: TaskBase, session: AsyncSession = Depends(get_session)
-) -> TaskSchema:
-    new_task = Task(**task.model_dump())
-    session.add(new_task)
+user_model = User  # circular import models fix
 
-    await session.commit()
-    await session.refresh(new_task)
-
-    return TaskSchema.model_validate(new_task)
-
-
-async def get_task_by_id(task_id: int, session: AsyncSession = Depends(get_session)):
-    task = await session.get(Task, task_id, options=[selectinload(Task.task_owner)])
-
-    if task is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"No task with id ({task_id}) found",
-        )
-    return TaskRelSchema.model_validate(task)
+task_service: Service = Service(
+    model=Task,
+    model_options=[selectinload(Task.task_owner)],
+    schema=TaskSchema,
+    schema_base=TaskBase,
+    schema_update=TaskUpdate,
+    rel_schema=TaskRelSchema,
+)
 
 
-async def get_tasks(
-    offset: int = 0, limit: int = 5, session: AsyncSession = Depends(get_session)
-) -> List[TaskSchema]:
-    query = select(Task).offset(offset).limit(limit).order_by(Task.id)
-    res = await session.scalars(query)
-    tasks = res.all()
-    return [TaskSchema.model_validate(task) for task in tasks]
+async def create_task(task_data: TaskBase) -> TaskSchema:
+    return await task_service.create_obj(task_data)
 
 
-# async def get_tasks_by_user(
-#     user_email: Optional[str] = None,
-#     user_id: Optional[int] = None,
-#     session: AsyncSession = Depends(get_session),
-# ) -> List[TaskSchema]:
-#     if user_id is not None:
-#         query = select(Task).where(Task.user_id == user_id)
-#         res = await session.execute(query)
-#         tasks = res.all()
-#     elif user_email is not None:
-#         query = select(User).where(User.email == user_email)
-#         res = await session.execute(query)
-#         tasks = res.all()
-#     else:
-#         raise HTTPException(
-#             status_code=status.HTTP_404_NOT_FOUND,
-#             detail="Neither email nor id were provided, tasks could not be found :(",
-#         )
-
-#     validated_tasks = [TaskSchema.model_validate(task) for task in tasks]
-#     return validated_tasks
+async def get_task_by_id(task_id: int) -> TaskRelSchema:
+    return await task_service.get_by_id(task_id)
 
 
-async def delete_task_by_id(task_id: int, session: AsyncSession = Depends(get_session)):
-    task = await session.get(Task, task_id)
-
-    if task is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"No task with id ({task_id}) found",
-        )
-
-    await session.delete(task)
-    await session.commit()
-
-    return TaskSchema.model_validate(task)
+async def get_tasks(offset: int = 0, limit: int = 5) -> List[TaskSchema]:
+    return await task_service.get_all(offset, limit)
 
 
-async def change_task(
-    task_data: TaskUpdate, task_id: int, session: AsyncSession = Depends(get_session)
-):
-    task_to_change = await session.get(Task, task_id)
-    task_data_dict = task_data.model_dump(exclude_unset=True)
+async def delete_task_by_id(task_id: int) -> TaskSchema:
+    return await task_service.delete_obj_by_id(task_id)
 
-    for key, val in task_data_dict.items():
-        setattr(task_to_change, key, val)
 
-    await session.commit()
-    await session.refresh(task_to_change)
+async def change_task(task_data: TaskUpdate, task_id: int) -> TaskRelSchema:
+    return await task_service.change_obj(task_data, task_id)
 
-    return TaskRelSchema.model_validate(task_to_change)
+
+async def mark_task_as_complete(task_id: int):
+    async with async_session_factory() as session:
+        task = await session.get(Task, task_id)
+        if task is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Task with id {task_id} not found",
+            )
+
+        task.is_completed = True
+        await session.commit()
+        await session.refresh(task)
+        return TaskSchema.model_validate(task)

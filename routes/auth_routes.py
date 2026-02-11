@@ -38,12 +38,3 @@ def auth_user_issue_jwt_refresh(
     refresh_token = create_refresh_token(user)
 
     return TokenInfo(access_token=access_token, refresh_token=refresh_token)
-
-
-@router.get("/check/")
-def auth_person_check(
-    payload: dict = Depends(get_current_token_payload),
-    user=Depends(get_current_auth_user),
-):
-    iat = payload.get("iat")
-    return {**user.model_dump(), "logged_in_at": iat}

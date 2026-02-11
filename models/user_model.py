@@ -20,5 +20,5 @@ class User(Base):
     created_at: Mapped[DateStr]
 
     tasks: Mapped[List["Task"]] = relationship(
-        back_populates="task_owner", cascade="all, delete-orphan"
+        "Task", back_populates="task_owner", cascade="all, delete-orphan"
     )

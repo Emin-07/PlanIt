@@ -4,6 +4,9 @@ from typing import Annotated
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import mapped_column
 
+# from .task_model import Task
+# from .user_model import User
+
 
 def get_current_utc_time() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -11,3 +14,5 @@ def get_current_utc_time() -> str:
 
 intpk = Annotated[int, mapped_column(Integer, primary_key=True)]
 DateStr = Annotated[str, mapped_column(String, default=get_current_utc_time)]
+
+# __all__ = ["Task", "User"]

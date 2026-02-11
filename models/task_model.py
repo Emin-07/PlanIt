@@ -4,12 +4,12 @@ from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.setup import Base
-from schemas.task_schemas import PriorityEnum
+from schemas import PriorityEnum
 
 from . import DateStr, get_current_utc_time, intpk
 
 if TYPE_CHECKING:
-    from models.user_model import User
+    from .user_model import User
 
 
 class Task(Base):
@@ -25,4 +25,4 @@ class Task(Base):
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
-    task_owner: Mapped["User"] = relationship(back_populates="tasks")
+    task_owner: Mapped["User"] = relationship("User", back_populates="tasks")

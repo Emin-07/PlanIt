@@ -1,16 +1,10 @@
-from enum import Enum
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from models import get_current_utc_time
+from models.__init__ import get_current_utc_time
 
-
-class PriorityEnum(Enum):
-    DEFAULT = 0
-    LOW = 1
-    MEDIUM = 2
-    HIGH = 3
+from . import PriorityEnum
 
 
 class TaskBase(BaseModel):

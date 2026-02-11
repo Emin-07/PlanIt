@@ -1,8 +1,9 @@
-from typing import Optional
+from typing import Optional, Self
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, SecretStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, SecretStr, model_validator
 
-from models import get_current_utc_time
+from models.__init__ import get_current_utc_time
+from utils.auth_utils import hash_pwd
 
 
 class UserCreate(BaseModel):
@@ -10,6 +11,11 @@ class UserCreate(BaseModel):
     username: str = Field(min_length=3, max_length=50, description="Username")
     password: SecretStr = Field(min_length=4, description="Password (will be hashed)")
     model_config = ConfigDict(from_attributes=True)
+
+    @model_validator(mode="after")
+    def hash_password(self) -> Self:
+        self.password = hash_pwd(self.password.get_secret_value())  # type: ignore
+        return self
 
 
 class UserSchema(BaseModel):

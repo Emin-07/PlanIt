@@ -4,9 +4,12 @@ from fastapi import APIRouter, Depends
 
 from schemas.relation_schemas import UserRelSchema
 from schemas.user_schemas import UserSchema
+from services.auth_validation import (
+    get_current_auth_user,
+    get_current_token_payload,
+)
 from services.user_services import (
     change_user,
-    create_user,
     delete_user_by_id,
     get_user_by_email,
     get_user_by_id,
@@ -41,6 +44,10 @@ async def change_user_handle(user: UserSchema = Depends(change_user)):
     return user
 
 
-@router.post("/", response_model=UserSchema)
-async def create_user_handle(user: UserSchema = Depends(create_user)):
-    return user
+@router.get("/me/")
+def auth_person_me(
+    payload: dict = Depends(get_current_token_payload),
+    user=Depends(get_current_auth_user),
+):
+    iat = payload.get("iat")
+    return {**user.model_dump(), "logged_in_at": iat}

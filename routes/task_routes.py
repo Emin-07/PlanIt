@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 
 from schemas.relation_schemas import TaskRelSchema
 from schemas.task_schemas import TaskSchema
@@ -36,6 +36,13 @@ async def change_task_handle(task: TaskSchema = Depends(change_task)):
     return task
 
 
-@router.post("/", response_model=TaskSchema)
+@router.post("/", response_model=TaskSchema, status_code=status.HTTP_201_CREATED)
 async def create_task_handle(task: TaskSchema = Depends(create_task)):
     return task
+
+
+@router.post("/{id}/complete", response_model=TaskSchema)
+async def mark_task_complete_handle(id: int):
+    from services.task_services import mark_task_as_complete
+
+    return await mark_task_as_complete(id)

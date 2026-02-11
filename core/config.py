@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -7,11 +8,10 @@ BASE_DIR = Path(__file__).parent.parent
 
 class Settings(BaseSettings):
     # Redis
-
     redis_host: str = "localhost"
     redis_port: int = 6379
     redis_db: int = 0
-    redis_url: str = f"redis://{redis_host}:{redis_port}/{redis_db}"
+    REDIS_URL: str = f"redis://{redis_host}:{redis_port}/{redis_db}"
     redis_limit_global: int = 100
     redis_limit_auth: int = 10
     rate_limit_api: int = 1000
@@ -35,12 +35,18 @@ class Settings(BaseSettings):
     DB_PASSWORD: str
     DB_NAME: str
 
+    # SQLite
+    DATABASE_URL: Optional[str] = None
+    TESTING: bool = False
+
     @property
     def POSTGRES_url_psycopg(self):
         return f"postgresql+psycopg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     @property
     def POSTGRES_url_asyncpg(self):
+        if self.DATABASE_URL:
+            return self.DATABASE_URL
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     model_config = SettingsConfigDict(env_file=".env")
