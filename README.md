@@ -1,0 +1,8 @@
+![Python](https://img.shields.io/badge/Python-3.13+-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.116+-green.svg)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-blue.svg)
+![Docker](https://img.shields.io/badge/Docker-Enabled-blue.svg)
+![UV](https://img.shields.io/badge/UV-Package_Manager-orange.svg)
+![Tests](https://img.shields.io/badge/pytest-test?style=for-the-badge&logo=pytest&logoColor=%230A9EDC&color=white)
+![Redis](https://img.shields.io/badge/redis-server?style=for-the-badge&logo=redis&logoColor=%23FF4438&color=white)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-sd?style=for-the-badge&logo=githubactions&logoColor=%232088FF&color=white)
