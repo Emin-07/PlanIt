@@ -5,11 +5,39 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
+    
+    # Add Redis service
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - uses: actions/checkout@v3
+    
     - uses: actions/setup-python@v4
       with:
         python-version: '3.13'
-    - run: |
-        pip install -r requirements.txt 
-    - run: pytest
+        cache: 'pip' 
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Wait for Redis to be ready
+      run: |
+        timeout 30s sh -c 'until nc -z localhost 6379; do sleep 1; done'
+    
+    - name: Run tests
+      env:
+        REDIS_HOST: localhost
+        REDIS_PORT: 6379
+        TESTING: "true"
+      run: |
+        pytest -v
