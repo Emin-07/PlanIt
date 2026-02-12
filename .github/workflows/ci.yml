@@ -11,7 +11,5 @@ jobs:
       with:
         python-version: '3.13'
     - run: |
-        pip install redis
-        pip install pytest
-        pip install -r requirements.txt 2>/dev/null || true
+        pip install -r requirements.txt 
     - run: pytest

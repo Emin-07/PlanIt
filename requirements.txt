@@ -2,6 +2,10 @@
 #    uv pip compile pyproject.toml -o requirements.txt
 aiofiles==25.1.0
     # via backend (pyproject.toml)
+aioredis==2.0.1
+    # via backend (pyproject.toml)
+aiosqlite==0.22.1
+    # via backend (pyproject.toml)
 alembic==1.18.1
     # via backend (pyproject.toml)
 annotated-doc==0.0.4
@@ -17,6 +21,8 @@ argon2-cffi==25.1.0
     # via backend (pyproject.toml)
 argon2-cffi-bindings==25.1.0
     # via argon2-cffi
+async-timeout==5.0.1
+    # via aioredis
 asyncpg==0.31.0
     # via backend (pyproject.toml)
 bcrypt==5.0.0
@@ -35,6 +41,8 @@ click==8.3.1
     #   rich-toolkit
     #   typer
     #   uvicorn
+coverage==7.13.4
+    # via pytest-cov
 cryptography==46.0.3
     # via backend (pyproject.toml)
 dnspython==2.8.0
@@ -89,7 +97,9 @@ packaging==25.0
 passlib==1.7.4
     # via backend (pyproject.toml)
 pluggy==1.6.0
-    # via pytest
+    # via
+    #   pytest
+    #   pytest-cov
 psycopg==3.3.2
     # via backend (pyproject.toml)
 pycparser==2.23
@@ -114,6 +124,13 @@ pygments==2.19.2
 pyjwt==2.10.1
     # via backend (pyproject.toml)
 pytest==9.0.2
+    # via
+    #   backend (pyproject.toml)
+    #   pytest-asyncio
+    #   pytest-cov
+pytest-asyncio==1.3.0
+    # via backend (pyproject.toml)
+pytest-cov==7.0.0
     # via backend (pyproject.toml)
 python-dotenv==1.2.1
     # via
@@ -123,6 +140,8 @@ python-multipart==0.0.21
     # via fastapi
 pyyaml==6.0.3
     # via uvicorn
+redis==7.1.1
+    # via backend (pyproject.toml)
 rich==14.2.0
     # via
     #   rich-toolkit
@@ -157,6 +176,7 @@ types-pyjwt==1.7.1
     # via backend (pyproject.toml)
 typing-extensions==4.15.0
     # via
+    #   aioredis
     #   alembic
     #   fastapi
     #   pydantic
