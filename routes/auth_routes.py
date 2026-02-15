@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, Request
+from pydantic import EmailStr
 
 from schemas.auth_schema import TokenInfo
 from schemas.user_schemas import UserSchema
 from services.auth_validation import (
-    get_current_auth_user,
     get_current_auth_user_for_refresh,
     get_current_token_payload,
     validate_auth_user,
@@ -38,3 +38,13 @@ def auth_user_issue_jwt_refresh(
     refresh_token = create_refresh_token(user)
 
     return TokenInfo(access_token=access_token, refresh_token=refresh_token)
+
+
+@router.post("/logout/")
+def auth_user_logout(
+    request: Request,
+    payload: dict = Depends(get_current_token_payload),
+):
+    blacklist = request.app.state.blacklist
+    blacklist.add(jti=payload["jti"], expires_at=payload["exp"], sub=payload["sub"])
+    return {"detail": "Successfully logged out"}

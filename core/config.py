@@ -39,6 +39,12 @@ class Settings(BaseSettings):
     DATABASE_URL: Optional[str] = None
     TESTING: bool = False
 
+    # Email
+    SMTP_SERVER: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    APP_PASSWORD_SECRET: str
+    MAIL_FROM: str
+
     @property
     def POSTGRES_url_psycopg(self):
         return f"postgresql+psycopg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
@@ -49,7 +55,7 @@ class Settings(BaseSettings):
             return self.DATABASE_URL
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
-    model_config = SettingsConfigDict(env_file=".env")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
 # mypy: ignore-errors

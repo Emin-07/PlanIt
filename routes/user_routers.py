@@ -51,3 +51,12 @@ def auth_person_me(
 ):
     iat = payload.get("iat")
     return {**user.model_dump(), "logged_in_at": iat}
+
+
+@router.delete("/me/")
+async def auth_person_delete_me(
+    payload: dict = Depends(get_current_token_payload),
+    user=Depends(get_current_auth_user),
+):
+    await delete_user_by_id(user.id)
+    return {"detail": f"Your account has been deleted successfully, {user.email}."}

@@ -1,31 +1,30 @@
-import asyncio
 from contextlib import asynccontextmanager
 from typing import Dict, List
 
-import uvicorn
 from fastapi import Depends, FastAPI, Request, status
+from pydantic import EmailStr
 
-from core.redis import redis_manager
-from core.setup import get_db
+from core.setup import get_db, settings
 from routes.auth_routes import router as auth_router
 from routes.task_routes import router as task_router
 from routes.user_routers import router as user_router
 from schemas.user_schemas import UserSchema
 from services.auth_validation import get_current_auth_user
 from services.user_services import create_user
-from utils.auth_helper import TokenBlackList
-from utils.data_helper import add_data_into_db, recreate_tables
 from utils.rate_limit import (
     get_auth_rate_limit,
     get_global_rate_limit,
     get_user_rate_limit,
 )
 
-admin_email = "admin@example.com"
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    import asyncio
+
+    from core.redis import redis_manager
+    from utils.auth_helper import TokenBlackList
+
     print("Starting up...")
 
     blacklist = TokenBlackList()
@@ -59,7 +58,7 @@ async def lifespan(app: FastAPI):
         pass
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, dependencies=[Depends(get_global_rate_limit)])
 
 app.include_router(user_router, dependencies=[Depends(get_user_rate_limit)])
 app.include_router(task_router, dependencies=[Depends(get_user_rate_limit)])
@@ -76,6 +75,43 @@ async def create_user_handle(user: UserSchema = Depends(create_user)):
     return user
 
 
+@app.get("/jwt/forgot-password/", tags=["jwt"])
+async def forgot_password(email: EmailStr, session=Depends(get_db)):
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+
+    from services.user_services import get_user_by_email
+    from utils.auth_helper import create_access_token
+
+    server = smtplib.SMTP(settings.SMTP_SERVER, settings.SMTP_PORT)
+    server.starttls()
+    server.login(settings.MAIL_FROM, settings.APP_PASSWORD_SECRET)
+
+    msg = MIMEMultipart()
+    msg["From"] = settings.MAIL_FROM
+    msg["To"] = email
+    msg["Subject"] = "Token for account reset"
+
+    user = await get_user_by_email(email, session)
+    token = create_access_token(user)
+
+    msg.attach(
+        MIMEText(
+            f"""Here is token for deleting your account: 
+            "
+            {token}
+            "
+            thanks for using our service!""",
+            "plain",
+        )
+    )
+
+    server.send_message(msg)
+
+    return {"detail": f"Token has been sent to {email} if it exists in our system."}
+
+
 @app.get("/", response_model=Dict[str, str], summary="User greeter")
 async def root_func(rate_limiter=Depends(get_global_rate_limit)):
     return {"message": "hello world"}
@@ -90,6 +126,8 @@ async def root_func(rate_limiter=Depends(get_global_rate_limit)):
 async def refresh_data(
     session=Depends(get_db), rate_limiter=Depends(get_global_rate_limit)
 ):
+    from utils.data_helper import add_data_into_db, recreate_tables
+
     await recreate_tables()
     await add_data_into_db(session)
     return {"message": "Tables were recreated!"}
@@ -106,6 +144,7 @@ async def see_the_blacklist(
     user=Depends(get_current_auth_user),
     rate_limiter=Depends(get_global_rate_limit),
 ):
+    admin_email = "admin@example.com"
 
     if user.email == admin_email:
         return request.app.state.blacklist.jti_to_expiry_blacklist
@@ -114,6 +153,8 @@ async def see_the_blacklist(
 
 
 if __name__ == "__main__":
+    import uvicorn
+
     uvicorn.run("main:app", reload=True)
 
 
