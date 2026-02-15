@@ -204,27 +204,6 @@ PlanIt/
 └── uv.lock                    # UV lock file
 ```
 
-### 🔌 API Endpoints
-
-#### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `POST /api/auth/refresh` - Refresh access token
-- `POST /api/auth/forgot-password` - Request password reset
-- `POST /api/auth/reset-password` - Reset password with token
-
-#### Tasks
-- `GET /api/tasks` - Get all tasks (with pagination)
-- `GET /api/tasks/{id}` - Get specific task
-- `POST /api/tasks` - Create new task
-- `PUT /api/tasks/{id}` - Update task
-- `DELETE /api/tasks/{id}` - Delete task
-- `PATCH /api/tasks/{id}/complete` - Mark task as complete
-
-#### Users
-- `GET /api/users/me` - Get current user profile
-- `PUT /api/users/me` - Update user profile
-- `DELETE /api/users/me` - Delete user account
 
 ### 🧪 Testing
 
@@ -492,28 +471,6 @@ PlanIt/
 ├── test_send.py               # Тестовый отправитель email
 └── uv.lock                    # UV lock файл
 ```
-
-### 🔌 API Эндпоинты
-
-#### Аутентификация
-- `POST /api/auth/register` - Регистрация нового пользователя
-- `POST /api/auth/login` - Вход пользователя
-- `POST /api/auth/refresh` - Обновление токена доступа
-- `POST /api/auth/forgot-password` - Запрос на сброс пароля
-- `POST /api/auth/reset-password` - Сброс пароля с токеном
-
-#### Задачи
-- `GET /api/tasks` - Получить все задачи (с пагинацией)
-- `GET /api/tasks/{id}` - Получить конкретную задачу
-- `POST /api/tasks` - Создать новую задачу
-- `PUT /api/tasks/{id}` - Обновить задачу
-- `DELETE /api/tasks/{id}` - Удалить задачу
-- `PATCH /api/tasks/{id}/complete` - Отметить задачу как выполненную
-
-#### Пользователи
-- `GET /api/users/me` - Получить профиль текущего пользователя
-- `PUT /api/users/me` - Обновить профиль пользователя
-- `DELETE /api/users/me` - Удалить аккаунт пользователя
 
 ### 🧪 Тестирование
 
