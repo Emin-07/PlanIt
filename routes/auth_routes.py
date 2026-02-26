@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, Request
-from pydantic import EmailStr
 
 from schemas.auth_schema import TokenInfo
 from schemas.user_schemas import UserSchema

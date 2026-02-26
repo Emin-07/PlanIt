@@ -39,6 +39,14 @@ class Settings(BaseSettings):
     DATABASE_URL: Optional[str] = None
     TESTING: bool = False
 
+    # RabbitMQ
+    RMQ_HOST: str = "rabbitmq"
+    RMQ_PORT: int = 5672
+    RMQ_USER: str = "guest"
+    RMQ_PASSWORD: str = "guest"
+    MQ_EXCHANGE: str = ""
+    MQ_ROUTING_KEY: str = "email_queue"
+
     # Email
     SMTP_SERVER: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
@@ -55,7 +63,7 @@ class Settings(BaseSettings):
             return self.DATABASE_URL
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env")
 
 
 # mypy: ignore-errors

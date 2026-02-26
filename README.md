@@ -471,7 +471,7 @@ PlanIt/
 ├── test_send.py               # Тестовый отправитель email
 └── uv.lock                    # UV lock файл
 ```
-
+ 
 ### 🧪 Тестирование
 
 ```bash
